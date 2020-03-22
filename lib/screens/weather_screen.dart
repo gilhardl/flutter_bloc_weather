@@ -29,7 +29,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[850],
       appBar: AppBar(
-        title: Text('Flutter Weather'),
+        title: Text('BLoC Weather'),
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.search),
