@@ -1,8 +1,33 @@
+import 'package:bloc_weather/models/weather.dart';
+import 'package:bloc_weather/repositories/weather_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart' as http;
 
-void main() => runApp(MyApp());
+import 'package:bloc_weather/providers/weather_provider.dart';
+import 'package:bloc_weather/blocs/weather.dart';
 
-class MyApp extends StatelessWidget {
+import 'package:bloc_weather/screens/weather_screen.dart';
+
+void main() {
+  runApp(
+    App(
+      weatherRepository: WeatherRepository(
+        weatherProvider: WeatherProvider(
+          httpClient: http.Client(),
+        ),
+      ),
+    ),
+  );
+}
+
+class App extends StatelessWidget {
+  App({@required WeatherRepository weatherRepository})
+      : assert(weatherRepository != null),
+        _weatherRepository = weatherRepository;
+
+  WeatherRepository _weatherRepository;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -10,7 +35,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      home: BlocProvider(
+        create: (context) => WeatherBloc(weatherRepository: _weatherRepository),
+        child: WeatherScreen(),
+      ),
     );
   }
 }
