@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:bloc_weather/blocs/weather.dart';
+import 'package:bloc_weather/blocs/theme.dart';
 
 import 'package:bloc_weather/widgets/city_selection.dart';
 import 'package:bloc_weather/widgets/combined_weather_temperature.dart';
 import 'package:bloc_weather/widgets/last_updated.dart';
 import 'package:bloc_weather/widgets/location.dart';
+import 'package:bloc_weather/widgets/gradient_container.dart';
 
 class WeatherScreen extends StatefulWidget {
   @override
@@ -52,6 +54,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
         child: BlocConsumer<WeatherBloc, WeatherState>(
           listener: (context, state) {
             if (state is WeatherLoaded) {
+              BlocProvider.of<ThemeBloc>(context).add(
+                WeatherChanged(condition: state.weather.condition),
+              );
               _refreshCompleter?.complete();
               _refreshCompleter = Completer();
             }
@@ -66,33 +71,41 @@ class _WeatherScreenState extends State<WeatherScreen> {
             if (state is WeatherLoaded) {
               final weather = state.weather;
 
-              return RefreshIndicator(
-                onRefresh: () {
-                  BlocProvider.of<WeatherBloc>(context)
-                      .add(RefreshWeather(city: state.weather.location));
-                  return _refreshCompleter.future;
+              return BlocBuilder<ThemeBloc, ThemeState>(
+                builder: (context, themeState) {
+                  return GradientContainer(
+                    color: themeState.color,
+                    child: RefreshIndicator(
+                      onRefresh: () {
+                        BlocProvider.of<WeatherBloc>(context).add(
+                          RefreshWeather(city: weather.location),
+                        );
+                        return _refreshCompleter.future;
+                      },
+                      child: ListView(
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(top: 100.0),
+                            child: Center(
+                              child: Location(location: weather.location),
+                            ),
+                          ),
+                          Center(
+                            child: LastUpdated(dateTime: weather.lastUpdated),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 50.0),
+                            child: Center(
+                              child: CombinedWeatherTemperature(
+                                weather: weather,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
                 },
-                child: ListView(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(top: 100.0),
-                      child: Center(
-                        child: Location(location: weather.location),
-                      ),
-                    ),
-                    Center(
-                      child: LastUpdated(dateTime: weather.lastUpdated),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 50.0),
-                      child: Center(
-                        child: CombinedWeatherTemperature(
-                          weather: weather,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
               );
             }
             if (state is WeatherError) {
