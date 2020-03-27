@@ -6,7 +6,6 @@ import 'package:bloc_weather/blocs/settings.dart';
 class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final settingsBloc = BlocProvider.of<SettingsBloc>(context);
     return Scaffold(
       appBar: AppBar(title: Text('Settings')),
       body: ListView(
