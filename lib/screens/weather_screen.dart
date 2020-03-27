@@ -6,7 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_weather/blocs/weather.dart';
 import 'package:bloc_weather/blocs/theme.dart';
 
-import 'package:bloc_weather/widgets/city_selection.dart';
+import 'package:bloc_weather/screens/city_selection_screen.dart';
+import 'package:bloc_weather/screens/settings_screen.dart';
 import 'package:bloc_weather/widgets/combined_weather_temperature.dart';
 import 'package:bloc_weather/widgets/last_updated.dart';
 import 'package:bloc_weather/widgets/location.dart';
@@ -29,17 +30,27 @@ class _WeatherScreenState extends State<WeatherScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[850],
       appBar: AppBar(
         title: Text('BLoC Weather'),
         actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SettingsScreen(),
+                ),
+              );
+            },
+          ),
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () async {
               final city = await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => CitySelection(),
+                  builder: (context) => CitySelectionScreen(),
                 ),
               );
               if (city != null) {

@@ -1,3 +1,4 @@
+import 'package:bloc_weather/blocs/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
@@ -11,8 +12,15 @@ import 'package:bloc_weather/screens/weather_screen.dart';
 
 void main() {
   runApp(
-    BlocProvider<ThemeBloc>(
-      create: (context) => ThemeBloc(),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<ThemeBloc>(
+          create: (context) => ThemeBloc(),
+        ),
+        BlocProvider<SettingsBloc>(
+          create: (context) => SettingsBloc(),
+        ),
+      ],
       child: App(
         weatherRepository: WeatherRepository(
           weatherProvider: WeatherProvider(
@@ -37,7 +45,7 @@ class App extends StatelessWidget {
       builder: (context, themeState) => MaterialApp(
         title: 'BLoC Weather',
         theme: themeState.theme,
-        home: BlocProvider(
+        home: BlocProvider<WeatherBloc>(
           create: (context) =>
               WeatherBloc(weatherRepository: _weatherRepository),
           child: WeatherScreen(),
