@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
 
-import 'package:bloc_weather/blocs/theme/theme_event.dart';
-import 'package:bloc_weather/blocs/theme/theme_state.dart';
 import 'package:bloc_weather/models/weather.dart';
+import 'theme_event.dart';
+import 'theme_state.dart';
 
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   @override
